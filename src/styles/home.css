@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-    position: relative;
+  position: relative;
   overflow: hidden;
 }
 
@@ -67,7 +67,94 @@
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
 }
 
-/* Pagination bulat seperti di situs asli. */
+/* ---------- Hero di layar kecil ----------
+ *
+ * Tinggi hero ikut menyusut: `min(303px, 23.67vw)` membuat hero hanya 92px
+ * pada lebar 390px, dan 182px pada 768px. Tinggi itu terverifikasi dari situs
+ * acuan dan tidak boleh diubah, jadi yang harus menyesuaikan adalah isinya.
+ *
+ * Situasinya sebelum aturan ini: `.slide-overlay` ber-padding 2rem, jadi dari
+ * kotak 92px hanya tersisa 28px, sementara isinya 252px. Akibatnya judul
+ * terpotong separuh di tepi atas, subjudul menabrak titik paginasi, dan tombol
+ * "Daftar Online" hilang seluruhnya. Tombol itu justru CTA terpenting di
+ * beranda, jadi kehilangannya di ponsel adalah kerusakan yang paling mahal.
+ *
+ * Yang dikecilkan di sini hanya jarak, ukuran huruf, dan tombol.
+ *
+ * Padding bawah 1.5rem menyisakan ruang untuk titik paginasi yang menempel di
+ * dasar hero: bulatnya 11px dengan jarak 8px dari tepi bawah, jadi 19px
+ * terakhir hero sudah jadi tempatnya.
+ *
+ * Angka itu bukan tebakan bulat. `.slide-overlay` dipusatkan oleh
+ * `align-items: center` milik `.slide-slider`, jadi menambah padding bawah Xpx
+ * menaikkan isi sebesar X/2px. Dari situ dihitung nilai yang membuat tombol
+ * berhenti tepat di atas titik paginasi tanpa judulnya ikut terpotong di tepi
+ * atas.
+ *
+ * Batasnya 991.98px, bukan 767.98px, karena pada 768px hero baru 182px dan
+ * overlay setinggi 201px: isinya muat, tapi overlainya lebih tinggi dari hero
+ * sehingga tombolnya turun ke zona paginasi.
+ */
+@media (max-width: 991.98px) {
+  .slide-overlay {
+    padding: 0.25rem 0.5rem 1.5rem;
+  }
+
+  .slide-overlay h2 {
+    font-size: clamp(0.95rem, 4.2vw, 1.5rem);
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+  }
+
+  .slide-overlay p {
+    font-size: clamp(0.72rem, 2.8vw, 1rem);
+    line-height: 1.25;
+    margin-bottom: 0.3rem;
+  }
+
+  .slide-overlay .btn {
+    padding: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+}
+
+/* Subjudul disembunyikan di bawah 576px, bukan lebih tinggi.
+ *
+ * Padding bawah 1.5rem di atas sudah menyisakan ruang untuk titik paginasi
+ * yang menempel di dasar hero. Sisa ruangnya tidak cukup untuk judul dua
+ * baris, subjudul, dan tombol sekaligus: di lebar 320px hero cuma 76px.
+ *
+ * Yang dilepas adalah kalimat penjelasan, bukan tombol. Judul tetap terbaca
+ * dan tombol tetap ada. Melepas tombol akan membuat beranda kehilangan aksi
+ * utamanya di ponsel, dan itu kerugian yang jauh lebih mahal daripada
+ * hilangnya satu kalimat pendukung.
+ */
+@media (max-width: 575.98px) {
+  .slide-overlay p {
+    display: none;
+  }
+}
+
+/* Pagination bulat seperti di situs asli.
+ *
+ * Kontainer paginasi diratakan dengan flex, bukan inline-block.
+ *
+ * Bulatnya 11px, tapi kontainernya ikut 24px. Itu bukan kebutuhan layout,
+ * melainkan celah descender: bullet `inline-block` membuat baris dasar
+ * setinggi line-height, dan 13px sisanya tidak pernah berisi apa pun. Bulatnya
+ * sendiri tetap 11px dan tetap 8px dari tepi bawah, jadi posisinya di layar
+ * tidak bergeser sama sekali.
+ *
+ * 13px itu bukan detail kecil. Pada lebar 320px hero cuma 76px, dan caption
+ * harus menyisakan ruang untuk titik paginasi di dasarnya. Selama kontainer
+ * masih 24px, caption tidak muat dan judulnya terpotong di tepi atas.
+ */
+.swiperslider .swiper-pagination {
+  display: flex;
+  justify-content: center;
+}
+
 .swiperslider .swiper-pagination-bullet {
   width: 11px;
   height: 11px;
